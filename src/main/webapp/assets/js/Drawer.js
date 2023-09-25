@@ -50,12 +50,12 @@ class Drawer {
     }
 
     drawShapes(r) {
-        let x1 = r
+        let x1 = r / 2
         let y1 = 0
         let x2 = 0
         let y2 = 0
         let x3 = 0
-        let y3 = r
+        let y3 = -r / 2
         this.#ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--canvas-shapes-color')
 
         this.#ctx.beginPath() // Triangle
@@ -67,12 +67,12 @@ class Drawer {
 
         this.#ctx.beginPath() // Circle
         this.#ctx.moveTo(0, 0)
-        this.#ctx.arc(0, 0, r / 2, 0, -Math.PI / 2, true)
+        this.#ctx.arc(0, 0, r / 2, -Math.PI, -3 * Math.PI / 2, true)
         this.#ctx.closePath()
         this.#ctx.fill()
 
         this.#ctx.beginPath() // Rectangle
-        this.#ctx.rect(-r, 0, r, -r / 2)
+        this.#ctx.rect(-r, 0, r, -r)
         this.#ctx.closePath()
         this.#ctx.fill()
     }

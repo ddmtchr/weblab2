@@ -13,7 +13,6 @@ public class ControllerServlet extends HttpServlet {
             throws ServletException, IOException {
 //        getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
         response.sendRedirect(request.getContextPath() + "/index.jsp");
-
     }
 
     @Override
@@ -22,8 +21,6 @@ public class ControllerServlet extends HttpServlet {
         String argX = request.getParameter("x");
         String argY = request.getParameter("y");
         String argR = request.getParameter("r");
-
-//        Validator validator = new Validator();
 
         if (argX != null && argY != null && argR != null) {
             getServletContext().getNamedDispatcher("areaCheckServlet").forward(request, response);
