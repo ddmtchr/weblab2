@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Weblab #2</title>
+    <link rel="icon" href="resources/duck.png">
+    <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+
+<body>
+
+<header>
+    <div class="header">
+        <div class="themes-container">
+            <button id="theme-toggle-button">
+                To the dark side
+            </button>
+            <button id="ugly-theme-button">
+                No please
+            </button>
+        </div>
+        <img src="resources/ipaddress.jpg" width="60" height="60" alt="???"/>
+    </div>
+    <div class="info">
+        <p>Romanenko Mikhail Romanovich</p>
+        <p>Group P3211</p>
+        <p>Variant 2106</p>
+    </div>
+</header>
+
+<div id="container">
+
+    <div class="canvas-container section-container">
+        <canvas id="graph-canvas" width="500" height="500">Canvas isn't supported by your browser</canvas>
+    </div>
+
+    <div class="form-container section-container">
+        <form action="${pageContext.request.contextPath}/controllerServlet" method="POST" id="main-form">
+            <div class="x-container">
+                <div class="input-container">
+                    <label for="x-input" class="margin">Select X:</label>
+                    <select id="x-input" class="field" name="x" required>
+                        <option value="" selected></option>
+                        <option>-4</option>
+                        <option>-3</option>
+                        <option>-2</option>
+                        <option>-1</option>
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </div>
+                <span id="x-error-label" class="error-label"></span>
+            </div>
+
+            <div class="y-container">
+                <div class="input-container">
+                    <label for="y-input" class="margin">Enter Y:</label>
+                    <input id="y-input" class="field" type="text" name="y" maxlength="15" required/>
+                </div>
+                <span id="y-error-label" class="error-label"></span>
+            </div>
+
+            <div class="r-container">
+                <label class="margin">Select R:</label>
+                <div class="checkbox-group margin">
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" class="chb" id="1" value="1" name="r"/>
+                        <label for="1">1</label>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" class="chb" id="1.5" value="1.5" name="r"/>
+                        <label for="1.5">1.5</label>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" class="chb" id="2" value="2" name="r"/>
+                        <label for="2">2</label>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" class="chb" id="2.5" value="2.5" name="r"/>
+                        <label for="2.5">2.5</label>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" class="chb" id="3" value="3" name="r"/>
+                        <label for="3">3</label>
+                    </div>
+
+                </div>
+                <span id="r-error-label" class="error-label margin"></span>
+            </div>
+
+            <div class="buttons-container">
+                <input type="submit" value="Submit">
+                <button id="clear-button">
+                    Clear table
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="table-container section-container">
+        <table id="result-table">
+            <thead>
+            <tr>
+                <th>Result</th>
+                <th>X</th>
+                <th>Y</th>
+                <th class="r">R</th>
+                <th>Exec time</th>
+                <th>Executed at</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src="assets/js/Drawer.js"></script>
+<script type="text/javascript" src="assets/js/script.js"></script>
+<script type="text/javascript" src="assets/js/checkbox.js"></script>
+
+</body>
+</html>
