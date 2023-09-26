@@ -1,6 +1,7 @@
+package servlets;
+
 import com.google.gson.Gson;
-import testp.ResultBean;
-import testp.ResultObject;
+import validation.Validator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -29,13 +30,6 @@ public class AreaCheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter pw = response.getWriter();
-        pw.println("<html>");
-        pw.println("<body>");
-        pw.println("<h2>This is GET in AreaCheck</h2>");
-        pw.println("</body>");
-        pw.println("</html>");
-        pw.close();
     }
 
     @Override

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.List" %>
-<%@ page import="testp.ResultObject" %>
+<%@ page import="servlets.ResultObject" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +38,7 @@
 
     <div class="canvas-container section-container">
         <canvas id="graph-canvas" width="500" height="500">Canvas isn't supported by your browser</canvas>
+        <span id="canvas-error-label" class="error-label margin"></span>
     </div>
 
     <div class="form-container section-container">
@@ -46,7 +47,7 @@
             <div class="x-container">
                 <div class="input-container">
                     <label for="x-input" class="margin">Enter X:</label>
-                    <input id="x-input" class="field" type="text" name="x" maxlength="15" required/>
+                    <input id="x-input" class="field" type="text" name="x" maxlength="15" placeholder="Between -5 and 3" required/>
                 </div>
                 <span id="x-error-label" class="error-label margin"></span>
             </div>
@@ -139,7 +140,7 @@
             </tr>
             </thead>
             <tbody>
-            <jsp:useBean id="resultBean" scope="application" class="testp.ResultBean"/>
+            <jsp:useBean id="resultBean" scope="application" class="servlets.ResultBean"/>
             <%
                 List<ResultObject> previousResults = resultBean.getPreviousResults();
                 for (ResultObject item : previousResults) {
@@ -162,7 +163,6 @@
 
 <script type="text/javascript" src="assets/js/Drawer.js"></script>
 <script type="text/javascript" src="assets/js/script.js"></script>
-<script type="text/javascript" src="assets/js/checkbox.js"></script>
 
 </body>
 </html>

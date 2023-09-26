@@ -1,4 +1,4 @@
-package testp;
+package servlets;
 
 public class ResultObject {
     private String result;

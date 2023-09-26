@@ -1,34 +1,31 @@
 class Drawer {
-    #canvas
+    canvas
     #ctx
-    #halfWidth
-    #halfHeight
-    #rDefault
+    halfWidth
+    halfHeight
+    rDefault
     #canvasFont
     lastPoint
     lastPointIsDrawn
-    drawOnlyLast // todo
 
     constructor(lastPointIsDrawn) {
-        this.#canvas = document.getElementById('graph-canvas')
-        this.#ctx = this.#canvas.getContext('2d')
-        this.#halfWidth = this.#canvas.width / 2
-        this.#halfHeight = this.#canvas.height / 2
-        this.#rDefault = this.#canvas.width * 0.4
+        this.canvas = document.getElementById('graph-canvas')
+        this.#ctx = this.canvas.getContext('2d')
+        this.halfWidth = this.canvas.width / 2
+        this.halfHeight = this.canvas.height / 2
+        this.rDefault = this.canvas.width * 0.4
         this.#canvasFont = '16px sans-serif'
 
-        this.#ctx.translate(this.#halfWidth, this.#halfHeight)
+        this.#ctx.translate(this.halfWidth, this.halfHeight)
         this.#ctx.scale(1, -1)
 
         this.lastPointIsDrawn = lastPointIsDrawn;
     }
 
-    drawPoint(point, color) { // todo modes
-        // if (drawAllPoints) ...
-
+    drawPoint(point, color) {
         this.drawGraph(true)
-        const scaledX = point['x'] * 200 / point['r']
-        const scaledY = point['y'] * 200 / point['r']
+        const scaledX = point['x'] * this.rDefault / point['r']
+        const scaledY = point['y'] * this.rDefault / point['r']
         this.#ctx.fillStyle = color
         this.#ctx.beginPath()
         this.#ctx.moveTo(scaledX, scaledY)
@@ -44,9 +41,9 @@ class Drawer {
     }
 
     drawGraph(reset) {
-        if (reset) this.#ctx.clearRect(-this.#halfWidth, -this.#halfHeight, this.#canvas.width, this.#canvas.height)
+        if (reset) this.#ctx.clearRect(-this.halfWidth, -this.halfHeight, this.canvas.width, this.canvas.height)
         this.drawAxis()
-        this.drawShapes(this.#rDefault)
+        this.drawShapes(this.rDefault)
     }
 
     drawShapes(r) {
@@ -85,43 +82,43 @@ class Drawer {
         this.drawHorizontalAxis()
         this.drawVerticalAxis()
 
-        this.drawVerticalStroke(-this.#rDefault, 0, '-R')
-        this.drawVerticalStroke(-this.#rDefault / 2, 0, '-R/2')
-        this.drawVerticalStroke(this.#rDefault / 2, 0, 'R/2')
-        this.drawVerticalStroke(this.#rDefault, 0, 'R')
-        this.drawHorizontalStroke(0, -this.#rDefault, '-R')
-        this.drawHorizontalStroke(0, -this.#rDefault / 2, '-R/2')
-        this.drawHorizontalStroke(0, this.#rDefault / 2, 'R/2')
-        this.drawHorizontalStroke(0, this.#rDefault, 'R')
+        this.drawVerticalStroke(-this.rDefault, 0, '-R')
+        this.drawVerticalStroke(-this.rDefault / 2, 0, '-R/2')
+        this.drawVerticalStroke(this.rDefault / 2, 0, 'R/2')
+        this.drawVerticalStroke(this.rDefault, 0, 'R')
+        this.drawHorizontalStroke(0, -this.rDefault, '-R')
+        this.drawHorizontalStroke(0, -this.rDefault / 2, '-R/2')
+        this.drawHorizontalStroke(0, this.rDefault / 2, 'R/2')
+        this.drawHorizontalStroke(0, this.rDefault, 'R')
     }
 
     drawVerticalAxis() {
         this.#ctx.beginPath()
-        this.#ctx.moveTo(0, -this.#halfHeight)
-        this.#ctx.lineTo(0, this.#halfHeight)
-        this.#ctx.lineTo(-3, this.#halfHeight - 10)
-        this.#ctx.lineTo(3, this.#halfHeight - 10)
-        this.#ctx.lineTo(0, this.#halfHeight)
+        this.#ctx.moveTo(0, -this.halfHeight)
+        this.#ctx.lineTo(0, this.halfHeight)
+        this.#ctx.lineTo(-3, this.halfHeight - 10)
+        this.#ctx.lineTo(3, this.halfHeight - 10)
+        this.#ctx.lineTo(0, this.halfHeight)
         this.#ctx.stroke()
         this.#ctx.fill()
         this.#ctx.scale(1, -1)
         this.#ctx.textAlign = 'left'
-        this.#ctx.fillText('Y', -17, -this.#halfHeight + 14)
+        this.#ctx.fillText('Y', -17, -this.halfHeight + 14)
         this.#ctx.scale(1, -1)
     }
 
     drawHorizontalAxis() {
         this.#ctx.beginPath()
-        this.#ctx.moveTo(-this.#halfWidth, 0)
-        this.#ctx.lineTo(this.#halfWidth, 0)
-        this.#ctx.lineTo(this.#halfWidth - 10, 3)
-        this.#ctx.lineTo(this.#halfWidth - 10, -3)
-        this.#ctx.lineTo(this.#halfWidth, 0)
+        this.#ctx.moveTo(-this.halfWidth, 0)
+        this.#ctx.lineTo(this.halfWidth, 0)
+        this.#ctx.lineTo(this.halfWidth - 10, 3)
+        this.#ctx.lineTo(this.halfWidth - 10, -3)
+        this.#ctx.lineTo(this.halfWidth, 0)
         this.#ctx.stroke()
         this.#ctx.fill()
         this.#ctx.scale(1, -1)
         this.#ctx.textAlign = 'left'
-        this.#ctx.fillText('X', this.#halfWidth - 12, 20)
+        this.#ctx.fillText('X', this.halfWidth - 12, 20)
         this.#ctx.scale(1, -1)
     }
 
@@ -147,4 +144,13 @@ class Drawer {
         this.#ctx.scale(1, -1)
     }
 
+    scaleX(x, r) {
+        const canvasEdgeX = Math.round(this.canvas.getBoundingClientRect().left)
+        return +(((x - canvasEdgeX - this.halfWidth) * r / this.rDefault).toFixed(2))
+    }
+
+    scaleY(y, r) {
+        const canvasEdgeY = Math.round(this.canvas.getBoundingClientRect().top)
+        return +((-(y - canvasEdgeY - this.halfHeight) * r / this.rDefault).toFixed(2))
+    }
 }

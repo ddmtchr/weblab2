@@ -13,8 +13,8 @@
     --input-text-color: #000;
     --input-border-color: #c0c4c9;
     --input-border-color-focused: #6a77e8;
-    --button-bg-color: #8b9cff;
-    --button-bg-color-focused: #7b7ce2;
+    --button-bg-color: #c0dcfc;
+    --button-bg-color-focused: #b0ccfc;
     --button-border: 0;
     --button-font-color: #111;
     --error-color: #ff9995;
@@ -119,7 +119,7 @@ table {
 
 thead {
     & th:nth-child(1) {
-        width: 25%;
+        width: 20%;
     }
 
     & th:nth-child(2),
@@ -133,7 +133,7 @@ thead {
     }
 
     & th:nth-child(6) {
-        width: 40%;
+        width: 45%;
     }
 }
 
@@ -233,6 +233,11 @@ form {
 
 .choice-container > label {
     text-align: center;
+}
+
+input::placeholder {
+    font: var(--body-font);
+    color: #aaaaaa;
 }
 
 input[type="radio"] {

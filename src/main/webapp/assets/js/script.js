@@ -2,6 +2,7 @@ const tableBody = document.querySelector('#result-table tbody')
 const xError = document.querySelector('#x-error-label')
 const yError = document.querySelector('#y-error-label')
 const rError = document.querySelector('#r-error-label')
+const canvasError = document.querySelector('#canvas-error-label')
 const xField = document.querySelector('#x-input')
 const rField = document.querySelector('#r-input')
 const mainForm = document.querySelector('#main-form')
@@ -19,34 +20,12 @@ mainForm.addEventListener('submit', async function (event) {
     const y = document.querySelector('input[name="y"]:checked').value
     const checkboxGroup = document.querySelectorAll('.choice-group .chb:checked')
     const r = rField.value
+    clearErrorLabels()
 
-    xError.textContent = ''
-    yError.textContent = ''
-    rError.textContent = ''
     if (isNumeric(x) && parseFloat(x) > -5 && parseFloat(x) < 3 && checkboxGroup.length === 1 && r !== '') {
         try {
-            const params = {
-                method: 'POST',
-                body: prepareParams(x, y, r),
-            }
-
-            const response = await fetch('/weblab2/controllerServlet', params)
-            if (response.ok) {
-                const responseDataJSON = await response.text() // JSON
-                const responseObject = JSON.parse(responseDataJSON) // Object array
-
-                const point = {
-                    x: responseObject['x'],
-                    y: responseObject['y'],
-                    r: responseObject['r'],
-                }
-
-                drawer.drawPoint(point, getComputedStyle(document.body).getPropertyValue('--canvas-point-color'))
-                fillTable(responseObject)
-            } else {
-                console.log(`https://http.cat/${response.status}`)
-                window.location.href = `https://http.cat/${response.status}`
-            }
+            const response = await sendRequest(x, y, r)
+            await processResponse(response)
         } catch (e) {
             console.log(e)
         }
@@ -63,18 +42,34 @@ mainForm.addEventListener('submit', async function (event) {
     }
 })
 
-clearButton.addEventListener('click', async function (event) { // todo
+drawer.canvas.addEventListener('click', async function (event) {
+    const r = rField.value
+    clearErrorLabels()
+    if (r !== '') {
+        const scaledX = drawer.scaleX(event.x, r)
+        const scaledY = drawer.scaleY(event.y, r)
+        if (parseFloat(scaledX) > -5 && parseFloat(scaledX) < 3) {
+            try {
+                const response = await sendRequest(scaledX, scaledY, r)
+                await processResponse(response)
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            canvasError.textContent = 'X is out of range (-5; 3)'
+        }
+    } else {
+        canvasError.textContent = 'Select R to set point by click'
+    }
+})
+
+clearButton.addEventListener('click', async function (event) {
     try {
         event.preventDefault()
         drawer.lastPointIsDrawn = false
         drawer.drawGraph(true)
 
-        const params = {
-            method: 'POST',
-            body: prepareParams(0, 0, 0, 0),
-        }
-
-        const response = await fetch('/weblab2/controllerServlet', params)
+        const response = await sendRequest(0, 0, 0, 0)
         if (response.ok) {
             fillTable(null)
         }
@@ -121,6 +116,32 @@ xField.addEventListener('input', function () {
     }
 })
 
+async function sendRequest(...args) {
+    const params = {
+        method: 'POST',
+        body: prepareParams(args),
+    }
+    return await fetch('/weblab2/controllerServlet', params)
+}
+
+async function processResponse(response) {
+    if (response.ok) {
+        const responseDataJSON = await response.text() // JSON
+        const responseObject = JSON.parse(responseDataJSON) // Object array
+        const point = {
+            x: responseObject['x'],
+            y: responseObject['y'],
+            r: responseObject['r'],
+        }
+
+        drawer.drawPoint(point, getComputedStyle(document.body).getPropertyValue('--canvas-point-color'))
+        fillTable(responseObject)
+    } else {
+        console.log(`https://http.cat/${response.status}`)
+        window.location.href = `https://http.cat/${response.status}`
+    }
+}
+
 function fillTable(resultsObjects) {
     if (resultsObjects === null) tableBody.innerHTML = ''
     else {
@@ -138,34 +159,24 @@ function fillTable(resultsObjects) {
         execTimeCell.innerHTML = resultsObjects['execTime']
         currentTimeCell.innerHTML = resultsObjects['currentTime']
     }
-
-    // tableBody.innerHTML = ''
-    // for (const result of resultsObjects) {
-    //     const newRow = tableBody.insertRow()
-    //     const resultCell = newRow.insertCell(0)
-    //     const xCell = newRow.insertCell(1)
-    //     const yCell = newRow.insertCell(2)
-    //     const rCell = newRow.insertCell(3)
-    //     const execTimeCell = newRow.insertCell(4)
-    //     const currentTimeCell = newRow.insertCell(5)
-    //     resultCell.innerHTML = result['result']
-    //     xCell.innerHTML = +result['x']
-    //     yCell.innerHTML = +result['y']
-    //     rCell.innerHTML = +result['r']
-    //     execTimeCell.innerHTML = result['execTime']
-    //     currentTimeCell.innerHTML = result['currentTime']
-    // }
 }
 
 function isNumeric(str) {
     return /^\s*[+-]?([0-9]*[.])?[0-9]+\s*$/.test(str)
 }
 
-function prepareParams(...args) {
+function prepareParams(args) {
     const requestData = new URLSearchParams()
     requestData.append('x', args[0])
     requestData.append('y', args[1])
     requestData.append('r', args[2])
     if (args.length > 3) requestData.append('clear', '')
     return requestData
+}
+
+function clearErrorLabels() {
+    xError.textContent = ''
+    yError.textContent = ''
+    rError.textContent = ''
+    canvasError.textContent = ''
 }
