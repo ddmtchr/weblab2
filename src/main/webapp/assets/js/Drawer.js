@@ -40,7 +40,7 @@ class Drawer {
         }
     }
 
-    drawGraph(reset) {
+    drawGraph(reset) { //todo maybe modes
         if (reset) this.#ctx.clearRect(-this.halfWidth, -this.halfHeight, this.canvas.width, this.canvas.height)
         this.drawAxis()
         this.drawShapes(this.rDefault)
