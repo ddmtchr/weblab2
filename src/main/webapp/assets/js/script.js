@@ -11,12 +11,12 @@ const uglyThemeButton = document.querySelector('#ugly-theme-button')
 
 const drawer = new Drawer(false)
 drawer.drawGraph(false)
-fillTable(JSON.parse(getFromLocalStorage('previousResults')))
 
 mainForm.addEventListener('submit', async function (event) {
     event.preventDefault()
 
     const x = xField.value
+    const y = document.querySelector('input[name="y"]:checked').value
     const checkboxGroup = document.querySelectorAll('.choice-group .chb:checked')
     const r = rField.value
 
@@ -27,11 +27,10 @@ mainForm.addEventListener('submit', async function (event) {
         try {
             const params = {
                 method: 'POST',
+                body: prepareParams(x, y, r),
             }
-            const requestData = new FormData(this)
-            const response = await fetch('/weblab2/controllerServlet?' + new URLSearchParams(requestData),
-                params) // todo args
 
+            const response = await fetch('/weblab2/controllerServlet', params)
             if (response.ok) {
                 const responseDataJSON = await response.text() // JSON
                 const responseObject = JSON.parse(responseDataJSON) // Object array
@@ -42,14 +41,8 @@ mainForm.addEventListener('submit', async function (event) {
                     r: responseObject['r'],
                 }
 
-                const previousResultsJSON = getFromLocalStorage('previousResults') // JSON
-                const previousResults = JSON.parse(previousResultsJSON) // Object array
-                previousResults.push(responseObject)
-
-                localStorage.setItem('previousResults', JSON.stringify(previousResults))
-
                 drawer.drawPoint(point, getComputedStyle(document.body).getPropertyValue('--canvas-point-color'))
-                fillTable(previousResults)
+                fillTable(responseObject)
             } else {
                 console.log(`https://http.cat/${response.status}`)
                 window.location.href = `https://http.cat/${response.status}`
@@ -70,12 +63,24 @@ mainForm.addEventListener('submit', async function (event) {
     }
 })
 
-clearButton.addEventListener('click', function (event) {
-    event.preventDefault()
-    drawer.lastPointIsDrawn = false
-    drawer.drawGraph(true)
-    localStorage.clear()
-    fillTable([])
+clearButton.addEventListener('click', async function (event) { // todo
+    try {
+        event.preventDefault()
+        drawer.lastPointIsDrawn = false
+        drawer.drawGraph(true)
+
+        const params = {
+            method: 'POST',
+            body: prepareParams(0, 0, 0, 0),
+        }
+
+        const response = await fetch('/weblab2/controllerServlet', params)
+        if (response.ok) {
+            fillTable(null)
+        }
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 themeToggleButton.addEventListener('click', function () {
@@ -116,22 +121,9 @@ xField.addEventListener('input', function () {
     }
 })
 
-// yField.addEventListener('input', function () {
-//     const input = yField.value
-//     if (isNumeric(input) || input.trim() === '') {
-//         if (-5 < input && input < 5) {
-//             yField.classList.remove('invalid')
-//         } else {
-//             yField.classList.add('invalid')
-//         }
-//     } else {
-//         yField.classList.add('invalid')
-//     }
-// })
-
 function fillTable(resultsObjects) {
-    tableBody.innerHTML = ''
-    for (const result of resultsObjects) {
+    if (resultsObjects === null) tableBody.innerHTML = ''
+    else {
         const newRow = tableBody.insertRow()
         const resultCell = newRow.insertCell(0)
         const xCell = newRow.insertCell(1)
@@ -139,20 +131,41 @@ function fillTable(resultsObjects) {
         const rCell = newRow.insertCell(3)
         const execTimeCell = newRow.insertCell(4)
         const currentTimeCell = newRow.insertCell(5)
-        resultCell.innerHTML = result['result']
-        xCell.innerHTML = +result['x']
-        yCell.innerHTML = +result['y']
-        rCell.innerHTML = +result['r']
-        execTimeCell.innerHTML = result['execTime']
-        currentTimeCell.innerHTML = result['currentTime']
+        resultCell.innerHTML = resultsObjects['result']
+        xCell.innerHTML = +resultsObjects['x']
+        yCell.innerHTML = +resultsObjects['y']
+        rCell.innerHTML = +resultsObjects['r']
+        execTimeCell.innerHTML = resultsObjects['execTime']
+        currentTimeCell.innerHTML = resultsObjects['currentTime']
     }
+
+    // tableBody.innerHTML = ''
+    // for (const result of resultsObjects) {
+    //     const newRow = tableBody.insertRow()
+    //     const resultCell = newRow.insertCell(0)
+    //     const xCell = newRow.insertCell(1)
+    //     const yCell = newRow.insertCell(2)
+    //     const rCell = newRow.insertCell(3)
+    //     const execTimeCell = newRow.insertCell(4)
+    //     const currentTimeCell = newRow.insertCell(5)
+    //     resultCell.innerHTML = result['result']
+    //     xCell.innerHTML = +result['x']
+    //     yCell.innerHTML = +result['y']
+    //     rCell.innerHTML = +result['r']
+    //     execTimeCell.innerHTML = result['execTime']
+    //     currentTimeCell.innerHTML = result['currentTime']
+    // }
 }
 
 function isNumeric(str) {
-    //return !isNaN(parseFloat(str)) && isFinite(str)
     return /^\s*[+-]?([0-9]*[.])?[0-9]+\s*$/.test(str)
 }
 
-function getFromLocalStorage(key) {
-    return localStorage.getItem(key) === null ? JSON.stringify([]) : localStorage.getItem(key)
+function prepareParams(...args) {
+    const requestData = new URLSearchParams()
+    requestData.append('x', args[0])
+    requestData.append('y', args[1])
+    requestData.append('r', args[2])
+    if (args.length > 3) requestData.append('clear', '')
+    return requestData
 }

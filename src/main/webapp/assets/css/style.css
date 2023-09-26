@@ -299,13 +299,3 @@ input[type="submit"]:hover, button:hover {
     padding: 3%;
     margin: 3%;
 }
-
-/* For demonstration */
-
-/*input[type="checkbox"] + label {*/
-/*    font: 500 14px 'Fira Code', monospace;*/
-/*}*/
-
-/*th.r ~ th {*/
-/*    font: 500 14px 'Fira Code', monospace;*/
-/*}*/

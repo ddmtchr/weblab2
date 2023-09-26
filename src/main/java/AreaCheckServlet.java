@@ -1,5 +1,8 @@
 import com.google.gson.Gson;
+import testp.ResultBean;
+import testp.ResultObject;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +17,14 @@ import java.time.format.DateTimeFormatter;
 
 @WebServlet(name = "areaCheckServlet")
 public class AreaCheckServlet extends HttpServlet {
+    private ResultBean resultBean;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        resultBean = new ResultBean();
+        getServletContext().setAttribute("resultBean", resultBean);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,40 +41,48 @@ public class AreaCheckServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        long startTime = System.nanoTime();
+        if (request.getParameter("clear") == null) {
+            long startTime = System.nanoTime();
 
-        Validator validator = new Validator();
+            Validator validator = new Validator();
 
-        String strX = request.getParameter("x");
-        String strY = request.getParameter("y");
-        String strR = request.getParameter("r");
-        String result;
+            String strX = request.getParameter("x");
+            String strY = request.getParameter("y");
+            String strR = request.getParameter("r");
+            String result;
 
-        if (validator.tryParseCoordinates(strX, strY, strR)) {
-            double x = Double.parseDouble(strX);
-            double y = Double.parseDouble(strY);
-            double r = Double.parseDouble(strR);
-            if (calculate(x, y, r)) result = "Hit";
-            else result = "Miss";
+            if (validator.tryParseCoordinates(strX, strY, strR)) {
+                double x = Double.parseDouble(strX);
+                double y = Double.parseDouble(strY);
+                double r = Double.parseDouble(strR);
+                if (calculate(x, y, r)) result = "Hit";
+                else result = "Miss";
+            } else {
+                strX = "";
+                strY = "";
+                strR = "";
+                result = "Invalid args";
+            }
+
+            double execTime = (System.nanoTime() - startTime) / 1_000_000.0;
+
+            ResultObject resultObject = new ResultObject(result, strX, strY, strR,
+                    getDecimalFormatter().format(execTime) + "ms", getCurrentTime());
+            resultBean.addResult(resultObject);
+
+            Gson gson = new Gson();
+            String responseJSON = gson.toJson(resultObject);
+
+            response.setContentType("application/json");
+            PrintWriter pw = response.getWriter();
+            pw.println(responseJSON);
+            pw.close();
         } else {
-            strX = "";
-            strY = "";
-            strR = "";
-            result = "Invalid args";
+            resultBean.clearResults();
+            PrintWriter pw = response.getWriter();
+            pw.println("Clear table");
+            pw.close();
         }
-
-        double execTime = (System.nanoTime() - startTime) / 1_000_000.0;
-
-        ResponseObject responseObject = new ResponseObject(result, strX, strY, strR,
-                getDecimalFormatter().format(execTime) + "ms", getCurrentTime());
-
-        Gson gson = new Gson();
-        String responseJSON = gson.toJson(responseObject);
-
-        response.setContentType("application/json");
-        PrintWriter pw = response.getWriter();
-        pw.println(responseJSON);
-        pw.close();
     }
 
     private boolean calculate(double x, double y, double r) {

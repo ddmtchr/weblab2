@@ -1,3 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.List" %>
+<%@ page import="testp.ResultObject" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +48,7 @@
                     <label for="x-input" class="margin">Enter X:</label>
                     <input id="x-input" class="field" type="text" name="x" maxlength="15" required/>
                 </div>
-                <span id="x-error-label" class="error-label"></span>
+                <span id="x-error-label" class="error-label margin"></span>
             </div>
 
             <div class="y-container multi-choice">
@@ -113,7 +116,7 @@
                         <option value="3">3</option>
                     </select>
                 </div>
-                <span id="r-error-label" class="error-label"></span>
+                <span id="r-error-label" class="error-label margin"></span>
             </div>
 
             <div class="buttons-container">
@@ -130,16 +133,33 @@
                 <th>Result</th>
                 <th>X</th>
                 <th>Y</th>
-                <th class="r">R</th>
+                <th>R</th>
                 <th>Exec time</th>
                 <th>Executed at</th>
             </tr>
             </thead>
             <tbody>
+            <jsp:useBean id="resultBean" scope="application" class="testp.ResultBean"/>
+            <%
+                List<ResultObject> previousResults = resultBean.getPreviousResults();
+                for (ResultObject item : previousResults) {
+            %>
+            <tr>
+                <td><%= item.getResult() %></td>
+                <td><%= item.getX() %></td>
+                <td><%= item.getY() %></td>
+                <td><%= item.getR() %></td>
+                <td><%= item.getExecTime() %></td>
+                <td><%= item.getCurrentTime() %></td>
+            </tr>
+            <%
+                }
+            %>
             </tbody>
         </table>
     </div>
 </div>
+
 <script type="text/javascript" src="assets/js/Drawer.js"></script>
 <script type="text/javascript" src="assets/js/script.js"></script>
 <script type="text/javascript" src="assets/js/checkbox.js"></script>
