@@ -39,73 +39,87 @@
 
     <div class="form-container section-container">
         <form action="${pageContext.request.contextPath}/controllerServlet" method="POST" id="main-form">
+
             <div class="x-container">
                 <div class="input-container">
-                    <label for="x-input" class="margin">Select X:</label>
-                    <select id="x-input" class="field" name="x" required>
-                        <option value="" selected></option>
-                        <option>-4</option>
-                        <option>-3</option>
-                        <option>-2</option>
-                        <option>-1</option>
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                    </select>
+                    <label for="x-input" class="margin">Enter X:</label>
+                    <input id="x-input" class="field" type="text" name="x" maxlength="15" required/>
                 </div>
                 <span id="x-error-label" class="error-label"></span>
             </div>
 
-            <div class="y-container">
-                <div class="input-container">
-                    <label for="y-input" class="margin">Enter Y:</label>
-                    <input id="y-input" class="field" type="text" name="y" maxlength="15" required/>
-                </div>
-                <span id="y-error-label" class="error-label"></span>
-            </div>
+            <div class="y-container multi-choice">
+                <label class="margin">Select Y:</label>
+                <div class="choice-group">
 
-            <div class="r-container">
-                <label class="margin">Select R:</label>
-                <div class="checkbox-group margin">
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="-4" value="-4" name="y"/>
+                        <label for="-4">-4</label>
+                    </div>
 
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="chb" id="1" value="1" name="r"/>
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="-3" value="-3" name="y"/>
+                        <label for="-3">-3</label>
+                    </div>
+
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="-2" value="-2" name="y"/>
+                        <label for="-2">-2</label>
+                    </div>
+
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="-1" value="-1" name="y"/>
+                        <label for="-1">-1</label>
+                    </div>
+
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="0" value="0" name="y"/>
+                        <label for="0">0</label>
+                    </div>
+
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="1" value="1" name="y"/>
                         <label for="1">1</label>
                     </div>
 
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="chb" id="1.5" value="1.5" name="r"/>
-                        <label for="1.5">1.5</label>
-                    </div>
-
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="chb" id="2" value="2" name="r"/>
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="2" value="2" name="y"/>
                         <label for="2">2</label>
                     </div>
 
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="chb" id="2.5" value="2.5" name="r"/>
-                        <label for="2.5">2.5</label>
-                    </div>
-
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="chb" id="3" value="3" name="r"/>
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="3" value="3" name="y"/>
                         <label for="3">3</label>
                     </div>
 
+                    <div class="choice-container">
+                        <input type="radio" class="chb" id="4" value="4" name="y"/>
+                        <label for="4">4</label>
+                    </div>
+
                 </div>
-                <span id="r-error-label" class="error-label margin"></span>
+                <span id="y-error-label" class="error-label margin"></span>
+            </div>
+
+            <div class="r-container">
+                <div class="input-container">
+                    <label for="r-input" class="margin">Select R:</label>
+                    <select id="r-input" class="field" name="r">
+                        <option value="" selected></option>
+                        <option value="1">1</option>
+                        <option value="1.5">1.5</option>
+                        <option value="2">2</option>
+                        <option value="2.5">2.5</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <span id="r-error-label" class="error-label"></span>
             </div>
 
             <div class="buttons-container">
                 <input type="submit" value="Submit">
-                <button id="clear-button">
-                    Clear table
-                </button>
+                <button id="clear-button">Clear table</button>
             </div>
-
         </form>
     </div>
 

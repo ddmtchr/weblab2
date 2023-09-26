@@ -212,30 +212,30 @@ form {
     border-color: var(--input-border-color-focused);
 }
 
-.r-container {
+.multi-choice {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     margin: 3%;
 }
 
-.checkbox-group {
+.choice-group {
     display: flex;
-    padding: 5%;
+    padding: 3% 0 0;
     justify-content: space-around;
 }
 
-.checkbox-container {
+.choice-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.checkbox-container > label {
+.choice-container > label {
     text-align: center;
 }
 
-input[type="checkbox"] {
+input[type="radio"] {
     background-color: var(--input-bg-color);
     border: 1px solid var(--input-border-color);
     border-radius: 1px;
@@ -246,12 +246,12 @@ input[type="checkbox"] {
     align-self: center;
 }
 
-input[type="checkbox"]:hover {
+input[type="radio"]:hover {
     outline: none;
     border: 1px solid var(--input-border-color-focused);
 }
 
-input[type="checkbox"] + label {
+input[type="radio"] + label {
     cursor: pointer;
 }
 

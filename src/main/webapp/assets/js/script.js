@@ -1,7 +1,9 @@
 const tableBody = document.querySelector('#result-table tbody')
+const xError = document.querySelector('#x-error-label')
 const yError = document.querySelector('#y-error-label')
 const rError = document.querySelector('#r-error-label')
-const yField = document.querySelector('#y-input')
+const xField = document.querySelector('#x-input')
+const rField = document.querySelector('#r-input')
 const mainForm = document.querySelector('#main-form')
 const clearButton = document.querySelector('#clear-button')
 const themeToggleButton = document.querySelector('#theme-toggle-button')
@@ -14,17 +16,21 @@ fillTable(JSON.parse(getFromLocalStorage('previousResults')))
 mainForm.addEventListener('submit', async function (event) {
     event.preventDefault()
 
-    const y = yField.value
-    const checkboxGroup = document.querySelectorAll('.checkbox-group .chb:checked')
+    const x = xField.value
+    const checkboxGroup = document.querySelectorAll('.choice-group .chb:checked')
+    const r = rField.value
 
-    if (isNumeric(y) && parseFloat(y) >= -5 && parseFloat(y) <= 5 && checkboxGroup.length === 1) {
+    xError.textContent = ''
+    yError.textContent = ''
+    rError.textContent = ''
+    if (isNumeric(x) && parseFloat(x) > -5 && parseFloat(x) < 3 && checkboxGroup.length === 1 && r !== '') {
         try {
             const params = {
                 method: 'POST',
             }
             const requestData = new FormData(this)
             const response = await fetch('/weblab2/controllerServlet?' + new URLSearchParams(requestData),
-                params)
+                params) // todo args
 
             if (response.ok) {
                 const responseDataJSON = await response.text() // JSON
@@ -44,9 +50,6 @@ mainForm.addEventListener('submit', async function (event) {
 
                 drawer.drawPoint(point, getComputedStyle(document.body).getPropertyValue('--canvas-point-color'))
                 fillTable(previousResults)
-
-                yError.textContent = ''
-                rError.textContent = ''
             } else {
                 console.log(`https://http.cat/${response.status}`)
                 window.location.href = `https://http.cat/${response.status}`
@@ -54,10 +57,16 @@ mainForm.addEventListener('submit', async function (event) {
         } catch (e) {
             console.log(e)
         }
-    } else if (!(isNumeric(y) && parseFloat(y) >= -5 && parseFloat(y) <= 5)) {
-        yError.textContent = 'Y must be a float between -5 and 5'
-    } else if (checkboxGroup.length !== 1) {
-        rError.textContent = 'Exactly 1 checkbox should be selected'
+    } else {
+        if (!(isNumeric(x) && parseFloat(x) > -5 && parseFloat(x) < 3)) {
+            xError.textContent = 'X must be a float between -5 and 3'
+        }
+        if (checkboxGroup.length !== 1) {
+            yError.textContent = 'Y must be selected'
+        }
+        if (r === '') {
+            rError.textContent = 'R must be selected'
+        }
     }
 })
 
@@ -94,18 +103,31 @@ uglyThemeButton.addEventListener('click', function () {
     }
 })
 
-yField.addEventListener('input', function () {
-    const input = yField.value
+xField.addEventListener('input', function () {
+    const input = xField.value
     if (isNumeric(input) || input.trim() === '') {
-        if (-5 < input && input < 5) {
-            yField.classList.remove('invalid')
+        if (-5 < input && input < 3) {
+            xField.classList.remove('invalid')
         } else {
-            yField.classList.add('invalid')
+            xField.classList.add('invalid')
         }
     } else {
-        yField.classList.add('invalid')
+        xField.classList.add('invalid')
     }
 })
+
+// yField.addEventListener('input', function () {
+//     const input = yField.value
+//     if (isNumeric(input) || input.trim() === '') {
+//         if (-5 < input && input < 5) {
+//             yField.classList.remove('invalid')
+//         } else {
+//             yField.classList.add('invalid')
+//         }
+//     } else {
+//         yField.classList.add('invalid')
+//     }
+// })
 
 function fillTable(resultsObjects) {
     tableBody.innerHTML = ''
