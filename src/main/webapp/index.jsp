@@ -30,7 +30,7 @@
     <div class="info">
         <p>Romanenko Mikhail Romanovich</p>
         <p>Group P3211</p>
-        <p>Variant 2106</p>
+        <p>Variant 3101</p>
     </div>
 </header>
 
@@ -47,7 +47,7 @@
             <div class="x-container">
                 <div class="input-container">
                     <label for="x-input" class="margin">Enter X:</label>
-                    <input id="x-input" class="field" type="text" name="x" maxlength="15" placeholder="Between -5 and 3" required/>
+                    <input id="x-input" class="field" type="text" name="x" maxlength="15" placeholder="In the interval (-5; 3)" required/>
                 </div>
                 <span id="x-error-label" class="error-label margin"></span>
             </div>

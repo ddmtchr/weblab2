@@ -1,9 +1,10 @@
 package servlets;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultBean {
+public class ResultBean implements Serializable {
     private List<ResultObject> previousResults;
 
     public ResultBean() {

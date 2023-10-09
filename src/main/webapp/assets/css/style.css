@@ -22,8 +22,8 @@
     --canvas-axis-color: #000;
     --canvas-shapes-color: #9999ff60;
     --canvas-point-color: #000;
-    --bg-image: url("../../resources/bg-light.jpg");
-    --bg-image-size: cover;
+    --bg-image: none;
+    --bg-image-size: none;
     transition: all .3s ease-in-out;
 
     .dark-theme {
@@ -46,8 +46,8 @@
         --canvas-axis-color: #ddd;
         --canvas-shapes-color: #87CEEB60;
         --canvas-point-color: #faf0e6;
-        --bg-image: url("../../resources/bg-photo-crop.jpg");
-        --bg-image-size: cover;
+        --bg-image: none;
+        --bg-image-size: none;
     }
 
     .ugly-theme {

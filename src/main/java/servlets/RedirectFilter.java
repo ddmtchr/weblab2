@@ -16,9 +16,10 @@ public class RedirectFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String uri = ((HttpServletRequest)servletRequest).getRequestURI();
-        if (uri.equals("/weblab2/index.jsp"))
-            ((HttpServletResponse)servletResponse).sendRedirect("/weblab2/notfound.html");
-
+        if (uri.equals("/weblab2/index.jsp")) {
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            response.sendRedirect("/weblab2/error.jsp");
+        }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
