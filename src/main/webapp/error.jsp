@@ -24,7 +24,7 @@
     </div>
 </header>
 <div class="img-container">
-    <img src="resources/loading-cat.gif" alt="???" width=""/>
+    <img src="resources/loading-cat.gif" alt="???"/>
     <a href="/weblab2">Main page</a>
 </div>
 </body>

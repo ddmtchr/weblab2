@@ -297,10 +297,12 @@ input[type="submit"]:hover, button:hover {
 }
 
 .themes-container {
-    width: 140px;
+    min-width: 140px;
+    width: fit-content;
     display: flex;
     flex-direction: column;
-    align-self: flex-end;
+    flex-wrap: wrap;
+    align-self: flex-start;
 
 }
 

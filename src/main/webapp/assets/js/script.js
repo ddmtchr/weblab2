@@ -9,9 +9,10 @@ const mainForm = document.querySelector('#main-form')
 const clearButton = document.querySelector('#clear-button')
 const themeToggleButton = document.querySelector('#theme-toggle-button')
 const uglyThemeButton = document.querySelector('#ugly-theme-button')
+const modeSelectButton = document.querySelector('#mode-selector')
 
 const drawer = new Drawer(false)
-drawer.drawGraph(false)
+drawer.drawGraph()
 
 mainForm.addEventListener('submit', async function (event) {
     event.preventDefault()
@@ -67,7 +68,8 @@ clearButton.addEventListener('click', async function (event) {
     try {
         event.preventDefault()
         drawer.lastPointIsDrawn = false
-        drawer.drawGraph(true)
+        drawer.points = []
+        drawer.drawGraph()
 
         const response = await sendRequest(0, 0, 0, 0)
         if (response.ok) {
@@ -83,23 +85,39 @@ themeToggleButton.addEventListener('click', function () {
     document.body.classList.remove('ugly-theme')
 
     if (document.body.classList.contains('dark-theme')) {
-        themeToggleButton.textContent = "To the light side"
+        themeToggleButton.textContent = 'To the light side'
     } else {
-        themeToggleButton.textContent = "To the dark side"
+        themeToggleButton.textContent = 'To the dark side'
     }
 
-    drawer.drawGraph(true)
-    if (drawer.lastPointIsDrawn) {
-        drawer.drawPoint(drawer.lastPoint, getComputedStyle(document.body).getPropertyValue('--canvas-point-color'))
+    drawer.drawGraph()
+    if (drawer.drawAllPoints) {
+        drawer.drawPoints()
+    } else if (drawer.lastPointIsDrawn) {
+        drawer.drawPoint(drawer.lastPoint, drawer.getPointColor())
     }
 })
 
 uglyThemeButton.addEventListener('click', function () {
     document.body.classList.toggle('ugly-theme')
 
-    drawer.drawGraph(true)
-    if (drawer.lastPointIsDrawn) {
-        drawer.drawPoint(drawer.lastPoint, getComputedStyle(document.body).getPropertyValue('--canvas-point-color'))
+    drawer.drawGraph()
+    if (drawer.drawAllPoints) {
+        drawer.drawPoints()
+    } else if (drawer.lastPointIsDrawn) {
+        drawer.drawPoint(drawer.lastPoint, drawer.getPointColor())
+    }
+})
+
+modeSelectButton.addEventListener('click', function () {
+    drawer.drawAllPoints = !drawer.drawAllPoints
+    drawer.drawGraph()
+    if (drawer.drawAllPoints) {
+        modeSelectButton.textContent = 'All points'
+        drawer.drawPoints()
+    } else {
+        modeSelectButton.textContent = 'Last point'
+        if (drawer.lastPointIsDrawn) drawer.drawPoint(drawer.lastPoint, drawer.getPointColor())
     }
 })
 
@@ -134,7 +152,11 @@ async function processResponse(response) {
             r: responseObject['r'],
         }
 
-        drawer.drawPoint(point, getComputedStyle(document.body).getPropertyValue('--canvas-point-color'))
+        if (!drawer.drawAllPoints) {
+            drawer.drawGraph()
+        }
+        drawer.drawPoint(point, drawer.getPointColor())
+        drawer.points.push(point)
         fillTable(responseObject)
     } else {
         console.log(`https://http.cat/${response.status}`)

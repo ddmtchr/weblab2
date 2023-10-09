@@ -28,6 +28,5 @@ public class ControllerServlet extends HttpServlet {
         } else {
             getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
         }
-
     }
 }

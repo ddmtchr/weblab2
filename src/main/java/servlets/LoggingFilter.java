@@ -18,7 +18,7 @@ public class LoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        logger.info("Received request from " + servletRequest.getRemoteAddr() + ": " + servletRequest);
+        logger.info("Request from " + servletRequest.getRemoteAddr() + ": " + servletRequest);
         filterChain.doFilter(servletRequest, servletResponse);
         logger.info("Response status: " + ((HttpServletResponse)servletResponse).getStatus());
     }
@@ -26,5 +26,4 @@ public class LoggingFilter implements Filter {
     @Override
     public void destroy() {
     }
-
 }

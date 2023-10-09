@@ -5,8 +5,10 @@ class Drawer {
     halfHeight
     rDefault
     #canvasFont
+    points
     lastPoint
     lastPointIsDrawn
+    drawAllPoints
 
     constructor(lastPointIsDrawn) {
         this.canvas = document.getElementById('graph-canvas')
@@ -19,11 +21,12 @@ class Drawer {
         this.#ctx.translate(this.halfWidth, this.halfHeight)
         this.#ctx.scale(1, -1)
 
+        this.points = []
         this.lastPointIsDrawn = lastPointIsDrawn;
+        this.drawAllPoints = false
     }
 
     drawPoint(point, color) {
-        this.drawGraph(true)
         const scaledX = point['x'] * this.rDefault / point['r']
         const scaledY = point['y'] * this.rDefault / point['r']
         this.#ctx.fillStyle = color
@@ -40,8 +43,14 @@ class Drawer {
         }
     }
 
-    drawGraph(reset) { //todo maybe modes
-        if (reset) this.#ctx.clearRect(-this.halfWidth, -this.halfHeight, this.canvas.width, this.canvas.height)
+    drawPoints() {
+        for (let point of this.points) {
+            this.drawPoint(point, this.getPointColor())
+        }
+    }
+
+    drawGraph() {
+        this.#ctx.clearRect(-this.halfWidth, -this.halfHeight, this.canvas.width, this.canvas.height)
         this.drawAxis()
         this.drawShapes(this.rDefault)
     }
@@ -55,21 +64,31 @@ class Drawer {
         let y3 = -r / 2
         this.#ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--canvas-shapes-color')
 
-        this.#ctx.beginPath() // Triangle
+        this.drawTriangle(x1, y1, x2, y2, x3, y3)
+        this.drawCircleArc(0, 0, r / 2, -Math.PI, -3 * Math.PI / 2, true)
+        this.drawRectangle(-r, 0, r, -r)
+    }
+
+    drawTriangle(x1, y1, x2, y2, x3, y3) {
+        this.#ctx.beginPath()
         this.#ctx.moveTo(x1, y1)
         this.#ctx.lineTo(x2, y2)
         this.#ctx.lineTo(x3, y3)
         this.#ctx.closePath()
         this.#ctx.fill()
+    }
 
-        this.#ctx.beginPath() // Circle
-        this.#ctx.moveTo(0, 0)
-        this.#ctx.arc(0, 0, r / 2, -Math.PI, -3 * Math.PI / 2, true)
+    drawCircleArc(centerX, centerY, r, startAngle, endAngle, counterclockwise) {
+        this.#ctx.beginPath()
+        this.#ctx.moveTo(centerX, centerY)
+        this.#ctx.arc(centerX, centerY, r, startAngle, endAngle, counterclockwise)
         this.#ctx.closePath()
         this.#ctx.fill()
+    }
 
-        this.#ctx.beginPath() // Rectangle
-        this.#ctx.rect(-r, 0, r, -r)
+    drawRectangle(x, y, width, height) {
+        this.#ctx.beginPath()
+        this.#ctx.rect(x, y, width, height)
         this.#ctx.closePath()
         this.#ctx.fill()
     }
@@ -142,6 +161,10 @@ class Drawer {
         this.#ctx.textAlign = 'right'
         this.#ctx.fillText(text, x - 5, -y + 5)
         this.#ctx.scale(1, -1)
+    }
+
+    getPointColor() {
+        return getComputedStyle(document.body).getPropertyValue('--canvas-point-color')
     }
 
     scaleX(x, r) {

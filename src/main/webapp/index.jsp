@@ -25,6 +25,11 @@
                 No please
             </button>
         </div>
+        <div class="themes-container">
+            <button id="mode-selector">
+                Last point
+            </button>
+        </div>
 <%--        <img src="resources/ipaddress.jpg" width="60" height="60" alt="???"/>--%>
     </div>
     <div class="info">
@@ -124,6 +129,7 @@
                 <input type="submit" value="Submit">
                 <button id="clear-button">Clear table</button>
             </div>
+
         </form>
     </div>
 
@@ -159,6 +165,7 @@
             </tbody>
         </table>
     </div>
+
 </div>
 
 <script type="text/javascript" src="assets/js/Drawer.js"></script>

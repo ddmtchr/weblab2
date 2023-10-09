@@ -57,25 +57,14 @@ public class AreaCheckServlet extends HttpServlet {
                 strR = "";
                 result = "Invalid args";
             }
-
             double execTime = (System.nanoTime() - startTime) / 1_000_000.0;
 
             ResultObject resultObject = new ResultObject(result, strX, strY, strR,
                     getDecimalFormatter().format(execTime) + "ms", getCurrentTime());
             resultBean.addResult(resultObject);
-
-            Gson gson = new Gson();
-            String responseJSON = gson.toJson(resultObject);
-
-            response.setContentType("application/json");
-            PrintWriter pw = response.getWriter();
-            pw.println(responseJSON);
-            pw.close();
+            writeResponse(response, resultObject);
         } else {
-            resultBean.clearResults();
-            PrintWriter pw = response.getWriter();
-            pw.println("Clear table");
-            pw.close();
+            clearTable(response);
         }
     }
 
@@ -99,5 +88,24 @@ public class AreaCheckServlet extends HttpServlet {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         return new DecimalFormat("#0.000", symbols);
+    }
+
+    private void clearTable(HttpServletResponse response) throws IOException {
+        resultBean.clearResults();
+        PrintWriter pw = response.getWriter();
+        pw.println("Clear table");
+        pw.close();
+    }
+
+    private String getJSONResponse(ResultObject resultObject) {
+        Gson gson = new Gson();
+        return gson.toJson(resultObject);
+    }
+
+    private void writeResponse(HttpServletResponse response, ResultObject resultObject) throws IOException {
+        response.setContentType("application/json");
+        PrintWriter pw = response.getWriter();
+        pw.println(getJSONResponse(resultObject));
+        pw.close();
     }
 }

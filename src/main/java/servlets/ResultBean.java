@@ -26,5 +26,4 @@ public class ResultBean implements Serializable {
     public void clearResults() {
         previousResults.clear();
     }
-
 }
