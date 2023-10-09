@@ -25,7 +25,7 @@
                 No please
             </button>
         </div>
-        <img src="resources/ipaddress.jpg" width="60" height="60" alt="???"/>
+<%--        <img src="resources/ipaddress.jpg" width="60" height="60" alt="???"/>--%>
     </div>
     <div class="info">
         <p>Romanenko Mikhail Romanovich</p>

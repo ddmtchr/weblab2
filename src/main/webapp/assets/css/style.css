@@ -7,6 +7,7 @@
     --body-font-color: #111;
     --body-bg-color: #fee1a440;
     --header-color: #aaa;
+    --header-border-color: #c0c4c9;
     --table-inside-border-color: #aaa;
     --odd-row-bg-color: #ddd;
     --input-bg-color: #f9fafb;
@@ -24,25 +25,25 @@
     --canvas-point-color: #000;
     --bg-image: none;
     --bg-image-size: none;
-    transition: all .3s ease-in-out;
 
     .dark-theme {
         --body-font: 400 14px 'Ubuntu', 'Roboto', sans-serif;
         --body-font-color: #ccc;
-        --body-bg-color: #2f3032;
+        --body-bg-color: #191919;
         --header-color: #aaa;
-        --table-inside-border-color: #aaa;
-        --odd-row-bg-color: #0c242b;
-        --input-bg-color: #0c242b;
+        --header-border-color: #777;
+        --table-inside-border-color: #777;
+        --odd-row-bg-color: #3f3f3f;
+        --input-bg-color: #282828;
         --input-text-color: #ddd;
-        --input-border-color: #c0c4c9;
+        --input-border-color: #777;
         --input-border-color-focused: #6a77e8;
-        --button-bg-color: #070038;
-        --button-bg-color-focused: #103250;
-        --button-border: 1px solid #cdcdcd;
-        --button-font-color: #ccc;
+        --button-bg-color: #ba9ffb;
+        --button-bg-color-focused: #ba9ffb;
+        --button-border: 0;
+        --button-font-color: #333;
         --error-color: #ff9995;
-        --section-bg-color: #181a36;
+        --section-bg-color: #282828;
         --canvas-axis-color: #ddd;
         --canvas-shapes-color: #87CEEB60;
         --canvas-point-color: #faf0e6;
@@ -55,6 +56,7 @@
         --body-font-color: #f00;
         --body-bg-color: #00f;
         --header-color: #aaa;
+        --header-border-color: #0f0;
         --table-inside-border-color: #0f0;
         --odd-row-bg-color: #00f;
         --input-bg-color: #0f0;
@@ -84,6 +86,7 @@ body {
     background-attachment: fixed;
     background-position: center center;
     background-repeat: no-repeat;
+    transition: all .4s ease;
 }
 
 #container {
@@ -100,7 +103,7 @@ header {
     display: flex;
     justify-content: space-between;
     border: 0 solid var(--header-color);
-    border-bottom-width: 2px;
+    border-bottom: 2px solid var(--header-border-color);
     margin-bottom: 5px;
 
     & p {
@@ -204,7 +207,7 @@ form {
     border-color: var(--input-border-color);
     color: var(--input-text-color);
     padding: 3%;
-    transition: all .15s ease-out;
+    transition: all 0.2s ease;
 }
 
 .field:focus {
@@ -275,6 +278,7 @@ input[type="submit"], button {
     color: var(--button-font-color);
     background-color: var(--button-bg-color);
     font-weight: 550;
+    transition: all 0.4s ease;
 }
 
 input[type="submit"]:hover, button:hover {
