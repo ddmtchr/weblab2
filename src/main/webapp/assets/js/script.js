@@ -12,7 +12,11 @@ const uglyThemeButton = document.querySelector('#ugly-theme-button')
 const modeSelectButton = document.querySelector('#mode-selector')
 
 const drawer = new Drawer(false)
-drawer.drawGraph()
+getPoints()
+    .then(() => {
+        drawer.drawGraph()
+        drawer.drawPoints()
+    })
 
 mainForm.addEventListener('submit', async function (event) {
     event.preventDefault()
@@ -134,6 +138,21 @@ xField.addEventListener('input', function () {
     }
 })
 
+rField.addEventListener('change', function () {
+    if (rField.value !== '') {
+        for (const point of drawer.points) {
+            point['r'] = rField.value
+        }
+        drawer.drawGraph()
+        drawer.drawPoints()
+    }
+})
+
+async function getPoints() {
+    const startResponse = await sendRequest('all')
+    await processResponse(startResponse)
+}
+
 async function sendRequest(...args) {
     const params = {
         method: 'POST',
@@ -146,22 +165,31 @@ async function processResponse(response) {
     if (response.ok) {
         const responseDataJSON = await response.text() // JSON
         const responseObject = JSON.parse(responseDataJSON) // Object array
-        const point = {
-            x: responseObject['x'],
-            y: responseObject['y'],
-            r: responseObject['r'],
+        if (responseObject instanceof Array) {
+            for (const point of responseObject) {
+                processPoint(point)
+            }
+        } else {
+            const point = {
+                x: responseObject['x'],
+                y: responseObject['y'],
+                r: responseObject['r'],
+            }
+            processPoint(point)
+            fillTable(responseObject)
         }
-
-        if (!drawer.drawAllPoints) {
-            drawer.drawGraph()
-        }
-        drawer.drawPoint(point, drawer.getPointColor())
-        drawer.points.push(point)
-        fillTable(responseObject)
     } else {
         console.log(`https://http.cat/${response.status}`)
         window.location.href = `https://http.cat/${response.status}`
     }
+}
+
+function processPoint(point) {
+    if (!drawer.drawAllPoints) {
+        drawer.drawGraph()
+    }
+    drawer.drawPoint(point, drawer.getPointColor())
+    drawer.points.push(point)
 }
 
 function fillTable(resultsObjects) {
@@ -193,6 +221,7 @@ function prepareParams(args) {
     requestData.append('y', args[1])
     requestData.append('r', args[2])
     if (args.length > 3) requestData.append('clear', '')
+    if (args.length === 1) requestData.append('all', '')
     return requestData
 }
 

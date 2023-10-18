@@ -1,6 +1,8 @@
 package servlets;
 
-public class ResultObject {
+import java.io.Serializable;
+
+public class ResultObject implements Serializable {
     private String result;
     private String x;
     private String y;

@@ -36,33 +36,37 @@ public class AreaCheckServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (request.getParameter("clear") == null) {
-            long startTime = System.nanoTime();
+            if (request.getParameter("all") == null) {
+                long startTime = System.nanoTime();
 
-            Validator validator = new Validator();
+                Validator validator = new Validator();
 
-            String strX = request.getParameter("x");
-            String strY = request.getParameter("y");
-            String strR = request.getParameter("r");
-            String result;
+                String strX = request.getParameter("x");
+                String strY = request.getParameter("y");
+                String strR = request.getParameter("r");
+                String result;
 
-            if (validator.tryParseCoordinates(strX, strY, strR)) {
-                double x = Double.parseDouble(strX);
-                double y = Double.parseDouble(strY);
-                double r = Double.parseDouble(strR);
-                if (calculate(x, y, r)) result = "Hit";
-                else result = "Miss";
+                if (validator.tryParseCoordinates(strX, strY, strR)) {
+                    double x = Double.parseDouble(strX);
+                    double y = Double.parseDouble(strY);
+                    double r = Double.parseDouble(strR);
+                    if (calculate(x, y, r)) result = "Hit";
+                    else result = "Miss";
+                } else {
+                    strX = "";
+                    strY = "";
+                    strR = "";
+                    result = "Invalid args";
+                }
+                double execTime = (System.nanoTime() - startTime) / 1_000_000.0;
+
+                ResultObject resultObject = new ResultObject(result, strX, strY, strR,
+                        getDecimalFormatter().format(execTime) + "ms", getCurrentTime());
+                resultBean.addResult(resultObject);
+                writeResponse(response, resultObject);
             } else {
-                strX = "";
-                strY = "";
-                strR = "";
-                result = "Invalid args";
+                writeResponse(response, resultBean.getPreviousResults().toArray());
             }
-            double execTime = (System.nanoTime() - startTime) / 1_000_000.0;
-
-            ResultObject resultObject = new ResultObject(result, strX, strY, strR,
-                    getDecimalFormatter().format(execTime) + "ms", getCurrentTime());
-            resultBean.addResult(resultObject);
-            writeResponse(response, resultObject);
         } else {
             clearTable(response);
         }
@@ -97,15 +101,16 @@ public class AreaCheckServlet extends HttpServlet {
         pw.close();
     }
 
-    private String getJSONResponse(ResultObject resultObject) {
+    private <T> String getJSONResponse(T result) {
         Gson gson = new Gson();
-        return gson.toJson(resultObject);
+        return gson.toJson(result);
     }
 
-    private void writeResponse(HttpServletResponse response, ResultObject resultObject) throws IOException {
+
+    private <T> void writeResponse(HttpServletResponse response, T result) throws IOException {
         response.setContentType("application/json");
         PrintWriter pw = response.getWriter();
-        pw.println(getJSONResponse(resultObject));
+        pw.println(getJSONResponse(result));
         pw.close();
     }
 }
