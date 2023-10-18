@@ -11,6 +11,8 @@ const themeToggleButton = document.querySelector('#theme-toggle-button')
 const uglyThemeButton = document.querySelector('#ugly-theme-button')
 const modeSelectButton = document.querySelector('#mode-selector')
 
+rField.value = getSavedValue('r-input')
+
 const drawer = new Drawer(false)
 getPoints()
     .then(() => {
@@ -139,6 +141,7 @@ xField.addEventListener('input', function () {
 })
 
 rField.addEventListener('change', function () {
+    saveValue(rField)
     if (rField.value !== '') {
         for (const point of drawer.points) {
             point['r'] = rField.value
@@ -167,6 +170,7 @@ async function processResponse(response) {
         const responseObject = JSON.parse(responseDataJSON) // Object array
         if (responseObject instanceof Array) {
             for (const point of responseObject) {
+                point['r'] = rField.value
                 processPoint(point)
             }
         } else {
@@ -230,4 +234,15 @@ function clearErrorLabels() {
     yError.textContent = ''
     rError.textContent = ''
     canvasError.textContent = ''
+}
+
+function saveValue(el) {
+    localStorage.setItem(el.id, el.value)
+}
+
+function getSavedValue(id) {
+    if (!localStorage.getItem(id)) {
+        return ''
+    }
+    return localStorage.getItem(id)
 }
